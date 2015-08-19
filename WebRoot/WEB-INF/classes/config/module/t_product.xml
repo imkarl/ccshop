@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+"-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="product">
+    
+    <select id="product.selectPageList" parameterType="cn.jeesoft.core.model.PagerModel" resultType="cn.jeesoft.mvc.bean.Product">
+        SELECT `id`, usersId, `catalogId`, `name`, description, `info`, `unitPrice`, `nowPrice`,
+          `picture`, `isTop`, `unit`, `createtime`, `updatetime`, 
+           case state when 1 then 'YES' when 0 then 'NO' else 'NO' end as state,
+           `viewCount`, `sellCount`, `stockCount`, `keywords`
+        FROM t_product t where 1=1 
+        <if test="query.usersId!=null and query.usersId>0"> and usersId=#{query.usersId} </if>
+        <if test="query.catalogId!=null and query.catalogId>0"> and catalogId=#{query.catalogId} </if>
+        <if test="query.name!=null and query.name!=''"> and name like concat('%', #{query.name}, '%') </if>
+        <if test="query.isTop!=null"> and isTop=#{query.isTop} </if>
+        <if test="query.state!=null"> and state=#{query.state.code} </if>
+        <if test="query.keywords!=null and query.keywords!=''"> and keywords like concat('%', #{query.keywords}, '%') </if>
+        
+        <if test="startTime!=null"> and createTime >= #{startTime} </if>
+        <if test="endTime!=null"><![CDATA[ and createTime <= #{endTime} ]]></if>
+        
+        <if test="orderby!=null and orderby!=''"> order by #{orderby} </if>
+        <if test="orderby==null or orderby==''"> order by id </if>
+        
+        <if test="sort!=null and sort.name=='asc'"> asc </if>
+        <if test="sort==null or sort.name!='asc'"> desc </if>
+        limit #{offset}, #{pageSize}
+    </select>
+    <select id="product.selectPageCount" parameterType="cn.jeesoft.core.model.PagerModel" resultType="java.lang.Integer">
+        SELECT count(*) FROM t_product t where 1=1
+        <if test="query.usersId!=null and query.usersId>0"> and usersId=#{query.usersId} </if>
+        <if test="query.catalogId!=null and query.catalogId>0"> and catalogId=#{query.catalogId} </if>
+        <if test="query.name!=null and query.name!=''"> and name like concat('%', #{query.name}, '%') </if>
+        <if test="query.isTop!=null"> and isTop=#{query.isTop} </if>
+        <if test="query.state!=null"> and state=#{query.state.code} </if>
+        <if test="query.keywords!=null and query.keywords!=''"> and keywords like concat('%', #{query.keywords}, '%') </if>
+        
+        <if test="startTime!=null"> and createTime >= #{startTime} </if>
+        <if test="endTime!=null"><![CDATA[ and createTime <= #{endTime} ]]></if>
+    </select>
+    
+    <select id="product.selectPageListBuy" parameterType="cn.jeesoft.core.model.PagerModel" resultType="cn.jeesoft.mvc.bean.Product">
+        SELECT `id`, usersId, `catalogId`, `name`, description, `info`, `unitPrice`, `nowPrice`,
+          `picture`, `isTop`, `unit`, `createtime`, `updatetime`, 
+           case state when 1 then 'YES' when 0 then 'NO' else 'NO' end as state,
+           `viewCount`, `sellCount`, `stockCount`, `keywords`
+        FROM t_product t where 1=1 
+        <if test="query.usersId!=null and query.usersId>0"> and usersId!=#{query.usersId} </if>
+        <if test="query.catalogId!=null and query.catalogId>0"> and catalogId=#{query.catalogId} </if>
+        <if test="query.name!=null and query.name!=''"> and name like concat('%', #{query.name}, '%') </if>
+        <if test="query.isTop!=null"> and isTop=#{query.isTop} </if>
+        <if test="query.state!=null"> and state=#{query.state.code} </if>
+        <if test="query.keywords!=null and query.keywords!=''"> and keywords like concat('%', #{query.keywords}, '%') </if>
+        
+        <if test="startTime!=null"> and createTime >= #{startTime} </if>
+        <if test="endTime!=null"><![CDATA[ and createTime <= #{endTime} ]]></if>
+        
+        <if test="orderby!=null and orderby!=''"> order by #{orderby} </if>
+        <if test="orderby==null or orderby==''"> order by id </if>
+        
+        <if test="sort!=null and sort.name=='asc'"> asc </if>
+        <if test="sort==null or sort.name!='asc'"> desc </if>
+        limit #{offset}, #{pageSize}
+    </select>
+    <select id="product.selectPageCountBuy" parameterType="cn.jeesoft.core.model.PagerModel" resultType="java.lang.Integer">
+        SELECT count(*) FROM t_product t where 1=1
+        <if test="query.usersId!=null and query.usersId>0"> and usersId!=#{query.usersId} </if>
+        <if test="query.catalogId!=null and query.catalogId>0"> and catalogId=#{query.catalogId} </if>
+        <if test="query.name!=null and query.name!=''"> and name like concat('%', #{query.name}, '%') </if>
+        <if test="query.isTop!=null"> and isTop=#{query.isTop} </if>
+        <if test="query.state!=null"> and state=#{query.state.code} </if>
+        <if test="query.keywords!=null and query.keywords!=''"> and keywords like concat('%', #{query.keywords}, '%') </if>
+        
+        <if test="startTime!=null"> and createTime >= #{startTime} </if>
+        <if test="endTime!=null"><![CDATA[ and createTime <= #{endTime} ]]></if>
+    </select>
+	
+	<select id="product.selectOne" parameterType="cn.jeesoft.mvc.bean.Product" resultType="cn.jeesoft.mvc.bean.Product">
+	    SELECT `id`, usersId, `catalogId`, `name`, description, `info`, `unitPrice`, `nowPrice`,
+          `picture`, `isTop`, `unit`, `createtime`, `updatetime`, 
+           case state when 1 then 'YES' when 0 then 'NO' else 'NO' end as state,
+           `viewCount`, `sellCount`, `stockCount`, `keywords`
+        FROM t_product t where 1=1 
+        <if test="id!=null and id>0"> and id=#{id} </if>
+        <if test="usersId!=null and usersId>0"> and usersId=#{usersId} </if>
+        <if test="catalogId!=null and catalogId>0"> and catalogId=#{catalogId} </if>
+        <if test="name!=null and name!=''"> and name like concat('%', #{name}, '%') </if>
+        <if test="isTop!=null"> and isTop=#{isTop} </if>
+        <if test="state!=null"> and state=#{state.code} </if>
+        <if test="keywords!=null and keywords!=''"> and keywords like concat('%', #{keywords}, '%') </if>
+        <if test="createTime!=null"> and createTime=#{createTime} </if>
+	</select>
+	
+	<insert id="product.insert" parameterType="cn.jeesoft.mvc.bean.Product" useGeneratedKeys="true" keyProperty="id">
+		insert into `t_product`
+		 ( `id`, usersId, `catalogId`, `name`, description, `info`, `unitPrice`, `nowPrice`,
+          `picture`, `isTop`, `unit`, `createtime`, state, `stockCount`, `keywords` )
+		values ( id, #{usersId}, #{catalogId}, #{name}, #{description}, #{info}, #{unitPrice}, #{nowPrice},
+		   #{picture}, case #{isTop} when true then 1 else 0 end, #{unit}, now(), #{state.code},
+           #{stockCount}, #{keywords} )
+	</insert>
+	
+	<update id="product.update" parameterType="cn.jeesoft.mvc.bean.Product">
+		update t_product
+	    <set>
+	        updatetime = now(),
+			<if test="catalogId!=null and catalogId>0">
+				catalogId=#{catalogId},
+			</if>
+	        <if test="name!=null and name!=''">
+	            name=#{name},
+	        </if>
+	        <if test="description!=null and description!=''">
+	            description=#{description},
+	        </if>
+	        <if test="info!=null and info!=''">
+	            info=#{info},
+	        </if>
+	        <if test="unitPrice!=null and unitPrice>0">
+	            unitPrice=#{unitPrice},
+	        </if>
+	        <if test="nowPrice!=null and nowPrice>0">
+	            nowPrice=#{nowPrice},
+	        </if>
+	        <if test="picture!=null and picture!=''">
+	            picture=#{picture},
+	        </if>
+	        <if test="isTop!=null">
+	            isTop=(case #{isTop} when true then 1 else 0 end),
+	        </if>
+	        <if test="unit!=null and unit!=''">
+	            unit=${unit},
+	        </if>
+	        <if test="state!=null">
+	            state=${state.code},
+	        </if>
+	        <if test="viewCount!=null and viewCount>0">
+	            viewCount=${viewCount},
+	        </if>
+	        <if test="sellCount!=null and sellCount>0">
+	            sellCount=${sellCount},
+	        </if>
+	        <if test="stockCount!=null and stockCount>0">
+	            stockCount=${stockCount},
+	        </if>
+	        <if test="keywords!=null and keywords!=''">
+	            keywords=${keywords}
+	        </if>
+	    </set>
+	    <where>
+	        <if test="usersId!=null and usersId>0">
+	            usersId=#{usersId},
+	        </if>
+		    <if test="id!=null"> id=#{id} </if>
+		    <if test="id==null"> id=-1 </if>
+	    </where>
+	</update>
+
+    <delete id="product.deleteById" parameterType="cn.jeesoft.mvc.bean.Product">
+        delete from t_product
+        <where>
+            <if test="usersId!=null and usersId>0">
+                usersId=#{usersId} and
+            </if>
+            <if test="id!=null"> id=#{id} </if>
+            <if test="id==null"> id=0 </if>
+        </where>
+    </delete>
+	
+</mapper>  

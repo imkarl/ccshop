@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+"-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="users_auth">
+    
+	<select id="users_auth.selectPageList" parameterType="cn.jeesoft.core.model.PagerModel" resultType="cn.jeesoft.mvc.bean.UsersAuth">
+		SELECT auth.id, auth.usersId, auth.photo, auth.name, auth.idcard, auth.bankcard, auth.bankname,
+		      auth.bankbranch, auth.bankaddr, auth.createtime, auth.updatetime,
+              case users.authState when 1 then 'YES' when 2 then 'WAIT' when 3 then 'INVALID' else 'NO' end as authState
+        FROM t_users_auth auth, t_users users where auth.usersId=users.id
+        <if test="query.authState!=null"> and users.authState=#{query.authState.code} </if>
+        <if test="query.usersId!=null"> and usersId=#{query.usersId} </if>
+        <if test="query.name!=null and query.name!=''"> and auth.name like concat('%', #{query.name}, '%') </if>
+        <if test="query.idcard!=null and query.idcard!=''"> and idcard like concat('%', #{query.idcard}, '%') </if>
+        <if test="query.bankCard!=null and query.bankCard!=''"> and bankCard like concat('%', #{query.bankCard}, '%') </if>
+        <if test="query.bankName!=null and query.bankName!=''"> and bankName like concat('%', #{query.bankName}, '%') </if>
+        <if test="query.bankBranch!=null and query.bankBranch!=''"> and bankBranch like concat('%', #{query.bankBranch}, '%') </if>
+        <if test="query.bankAddr!=null and query.bankAddr!=''"> and bankAddr like concat('%', #{query.bankAddr}, '%') </if>
+        
+        <if test="startTime!=null"> and auth.createtime >= #{startTime} </if>
+        <if test="endTime!=null"><![CDATA[ and auth.createtime <= #{endTime} ]]></if>
+        
+		<if test="orderby!=null and orderby!=''"> order by #{query.orderby} </if>
+		<if test="orderby==null or orderby==''"> order by id </if>
+		
+		<if test="sort!=null and sort.name=='asc'"> asc </if>
+		<if test="sort==null or sort.name!='asc'"> desc </if>
+		limit #{offset}, #{pageSize}
+	</select>
+	<select id="users_auth.selectPageCount" parameterType="cn.jeesoft.core.model.PagerModel" resultType="java.lang.Integer">
+		SELECT count(*) FROM t_users_auth auth, t_users users where auth.usersId=users.id
+        <if test="query.authState!=null"> and users.authState=#{query.authState.code} </if>
+        <if test="query.usersId!=null"> and usersId=#{query.usersId} </if>
+        <if test="query.name!=null and query.name!=''"> and auth.name like concat('%', #{query.name}, '%') </if>
+        <if test="query.idcard!=null and query.idcard!=''"> and idcard like concat('%', #{query.idcard}, '%') </if>
+        <if test="query.bankCard!=null and query.bankCard!=''"> and bankCard like concat('%', #{query.bankCard}, '%') </if>
+        <if test="query.bankName!=null and query.bankName!=''"> and bankName like concat('%', #{query.bankName}, '%') </if>
+        <if test="query.bankBranch!=null and query.bankBranch!=''"> and bankBranch like concat('%', #{query.bankBranch}, '%') </if>
+        <if test="query.bankAddr!=null and query.bankAddr!=''"> and bankAddr like concat('%', #{query.bankAddr}, '%') </if>
+        
+        <if test="startTime!=null"> and auth.createtime >= #{startTime} </if>
+        <if test="endTime!=null"><![CDATA[ and auth.createtime <= #{endTime} ]]></if>
+	</select>
+	
+	<select id="users_auth.selectOne" parameterType="cn.jeesoft.mvc.bean.UsersAuth" resultType="cn.jeesoft.mvc.bean.UsersAuth">
+        SELECT auth.id, auth.usersId, auth.photo, auth.name, auth.idcard, auth.bankcard, auth.bankname,
+              auth.bankbranch, auth.bankaddr, auth.createtime, auth.updatetime,
+              case users.authState when 1 then 'YES' when 2 then 'WAIT' when 3 then 'INVALID' else 'NO' end as authState
+        FROM t_users_auth auth, t_users users WHERE auth.usersId=users.id
+        <if test="authState!=null"> and users.authState=#{authState.code} </if>
+        <if test="usersId!=null"> and usersId=#{usersId} </if>
+        <if test="name!=null and name!=''"> and auth.name like concat('%', #{name}, '%') </if>
+        <if test="idcard!=null and idcard!=''"> and idcard like concat('%', #{idcard}, '%') </if>
+        <if test="bankCard!=null and bankCard!=''"> and bankCard like concat('%', #{bankCard}, '%') </if>
+        <if test="bankName!=null and bankName!=''"> and bankName like concat('%', #{bankName}, '%') </if>
+        <if test="bankBranch!=null and bankBranch!=''"> and bankBranch like concat('%', #{bankBranch}, '%') </if>
+        <if test="bankAddr!=null and bankAddr!=''"> and bankAddr like concat('%', #{bankAddr}, '%') </if>
+	</select>
+	
+    <update id="users_auth.update" parameterType="cn.jeesoft.mvc.bean.UsersAuth">
+    update t_users_auth
+    <set>
+        <if test="name!=null and name!=''"> name=#{name}, </if>
+        <if test="photo!=null and photo!=''"> photo=#{photo}, </if>
+        <if test="idcard!=null and idcard!=''"> idcard=#{idcard}, </if>
+        <if test="bankCard!=null and bankCard!=''"> bankCard=#{bankCard}, </if>
+        <if test="bankName!=null and bankName!=''"> bankName=#{bankName}, </if>
+        <if test="bankBranch!=null and bankBranch!=''"> bankBranch=#{bankBranch}, </if>
+        <if test="bankAddr!=null and bankAddr!=''"> bankAddr=#{bankAddr}, </if>
+        <if test="createTime!=null"> createTime=#{createTime}, </if>
+        <if test="updateTime != null"> updateTime=#{updateTime} </if>
+    </set>
+    <where>
+        <if test="usersId!=null"> usersId=#{usersId} </if>
+        <if test="usersId==null"> usersId=0 </if>
+    </where>
+    </update>
+    
+    <update id="users_auth.finish" parameterType="cn.jeesoft.mvc.bean.UsersAuth">
+    update t_users set authState=1
+    <where>
+        <if test="usersId!=null"> id=#{usersId} </if>
+        <if test="usersId==null"> id=0 </if>
+    </where>
+    </update>
+    
+    <update id="users_auth.finish_auth" parameterType="cn.jeesoft.mvc.bean.UsersAuth">
+    update t_users_auth set updateTime=now()
+    <where>
+        <if test="usersId!=null"> usersId=#{usersId} </if>
+        <if test="usersId==null"> usersId=0 </if>
+    </where>
+    </update>
+    
+    <update id="users_auth.wait" parameterType="cn.jeesoft.mvc.bean.UsersAuth">
+    update t_users set authState=2
+    <where>
+        <if test="usersId!=null"> id=#{usersId} </if>
+        <if test="usersId==null"> id=0 </if>
+    </where>
+    </update>
+    
+    <update id="users_auth.invalid" parameterType="cn.jeesoft.mvc.bean.UsersAuth">
+    update t_users set authState=3
+    <where>
+        <if test="usersId!=null"> id=#{usersId} </if>
+        <if test="usersId==null"> id=0 </if>
+    </where>
+    </update>
+    
+    <update id="users_auth.no" parameterType="cn.jeesoft.mvc.bean.UsersAuth">
+    update t_users set authState=0
+    <where>
+        <if test="usersId!=null"> id=#{usersId} </if>
+        <if test="usersId==null"> id=0 </if>
+    </where>
+    </update>
+    
+</mapper>  

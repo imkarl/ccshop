@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+"-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="product_favorite">
+    
+	<select id="product_favorite.selectPageList" parameterType="cn.jeesoft.core.model.PagerModel" resultType="hashMap">
+        SELECT product.id, product.usersId, `catalogId`, `name`, description, `info`, `unitPrice`, `nowPrice`,
+          `picture`, `isTop`, `unit`, product.createtime, `updatetime`, 
+           case state when 1 then 'YES' when 0 then 'NO' else 'NO' end as state,
+           `viewCount`, `sellCount`, `stockCount`, `keywords`
+        FROM t_product_favorite fav, t_product product where fav.productId = product.id
+        <if test="query.usersId!=null and query.usersId>0"> and usersId=#{query.usersId} </if>
+        <if test="query.id!=null and query.id>0"> and productId=#{query.id} </if>
+        
+        <if test="startTime!=null"> and fav.createTime >= #{startTime} </if>
+        <if test="endTime!=null"><![CDATA[ and fav.createTime <= #{endTime} ]]></if>
+        
+		<if test="orderby!=null and orderby!=''"> order by #{query.orderby} </if>
+		<if test="orderby==null or orderby==''"> order by fav.id </if>
+		
+		<if test="sort!=null and sort.name=='asc'"> asc </if>
+		<if test="sort==null or sort.name!='asc'"> desc </if>
+		limit #{offset}, #{pageSize}
+	</select>
+	<select id="product_favorite.selectPageCount" parameterType="cn.jeesoft.core.model.PagerModel" resultType="java.lang.Integer">
+		SELECT count(*) FROM t_product_favorite where 1=1
+        <if test="query.usersId!=null and query.usersId>0"> and usersId=#{query.usersId} </if>
+        <if test="query.id!=null and query.id>0"> and productId=#{query.id} </if>
+        
+        <if test="startTime!=null"> and createTime >= #{startTime} </if>
+        <if test="endTime!=null"><![CDATA[ and createTime <= #{endTime} ]]></if>
+	</select>
+	
+	<select id="product_favorite.selectOne" parameterType="cn.jeesoft.mvc.bean.ProductFavorite" resultType="cn.jeesoft.mvc.bean.ProductFavorite">
+        SELECT id, usersId, productId, createTime
+        FROM t_product_favorite where 1=1 
+        <if test="usersId!=null and usersId>0"> and usersId=#{usersId} </if>
+        <if test="productId!=null and productId>0"> and productId=#{productId} </if>
+        <if test="createTime!=null"> and createTime = #{createTime} </if>
+	</select>
+	
+    <insert id="product_favorite.insert" parameterType="cn.jeesoft.mvc.bean.ProductFavorite" useGeneratedKeys="true" keyProperty="id">
+        insert into `t_product_favorite`
+         ( `id`, `usersId`, `productId`, `createTime` )
+        values ( id, #{usersId}, #{productId}, now() )
+    </insert>
+    
+    <update id="product_favorite.update" parameterType="cn.jeesoft.mvc.bean.ProductFavorite">
+	    update t_product_favorite
+	    <set>
+	        <if test="usersId!=null and usersId>0"> usersId=#{usersId}, </if>
+	        <if test="productId!=null and productId>0"> productId=#{productId}, </if>
+	        <if test="createTime!=null"> createTime = #{createTime} </if>
+	    </set>
+	    <where>
+	        <if test="id!=null"> id=#{id} </if>
+	        <if test="id==null"> id=0 </if>
+	    </where>
+    </update>
+
+    <delete id="product_favorite.deleteById" parameterType="cn.jeesoft.mvc.bean.ProductFavorite">
+        delete from t_product_favorite
+	    <where>
+	        <if test="id!=null"> id=#{id} </if>
+	        <if test="id==null"> id=0 </if>
+	    </where>
+    </delete>
+    
+</mapper>  

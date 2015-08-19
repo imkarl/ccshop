@@ -1,0 +1,1 @@
+package cn.jeesoft.mvc.services;import org.springframework.stereotype.Service;import cn.jeesoft.mvc.bean.ManageSetting;@Servicepublic class ManageSettingService extends BaseService<ManageSetting> {	@Override	public String getTablename() {		return "manage.setting";	}		}

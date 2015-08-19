@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+"-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sys_trade">
+    
+	<select id="sys_trade.selectList" parameterType="cn.jeesoft.mvc.bean.SysTrade" resultType="hashMap">
+		SELECT t.id, t.fromId, t.toId, t.name, t.sn, t.money, t.createtime, t.endTime, t.paySn, t.remark, 
+            feesMoney, oneProfitMoney, twoProfitMoney, threeProfitMoney, 
+			case t.state when 0 then 'CREATED' when 1 then 'FAILED' when 2 then 'SUCCESS' when 3 then 'PAYOFF' else 'UNKNOWN' end as state, 
+			case t.type when 1 then 'CALL' when 2 then 'TRANSFER' when 3 then 'SHOP' when 4 then 'P2P' when 5 then 'PROFIT' when 6 then 'FEES' when 7 then 'RECHARGE' when 8 then 'WITHDRAW' else 'UNKNOWN' end as type, 
+			case t.payType when 0 then 'BALANCE' when 1 then 'ALIPAY' when 2 then 'BANK' when 3 then 'KKLPAY' when 4 then 'AUTH' else 'UNKNOWN' end as payType
+		FROM t_sys_trade t where 1=1  
+		<if test="fromId!=null"> and t.fromId=#{fromId} </if>
+		<if test="toId!=null and toId>0"> and t.toId=#{toId} </if>
+		<if test="name!=null and name!=''"> and t.name=#{name} </if>
+		<if test="sn!=null and sn!=''"> and t.sn=#{sn} </if>
+		<if test="paySn!=null and paySn!=''"> and t.paySn=#{paySn} </if>
+		<if test="remark!=null and remark!=''"> and t.remark=#{remark} </if>
+        <if test="type!=null"> and t.type = #{type.code} </if>
+        <if test="state!=null"> and t.state = #{state.code} </if>
+        <if test="payType!=null"> and t.payType = #{payType.code} </if>
+        <if test="createTime!=null"> and t.createTime=#{createTime} </if>
+        <if test="endTime!=null"> and t.endTime=#{endTime} </if>
+		order by id desc
+	</select>
+	<select id="sys_trade.selectCount" parameterType="cn.jeesoft.mvc.bean.SysTrade" resultType="int">
+		SELECT count(*) FROM t_sys_trade t where 1=1  
+        <if test="fromId!=null"> and t.fromId=#{fromId} </if>
+        <if test="toId!=null and toId>0"> and t.toId=#{toId} </if>
+        <if test="name!=null and name!=''"> and t.name=#{name} </if>
+        <if test="sn!=null and sn!=''"> and t.sn=#{sn} </if>
+        <if test="paySn!=null and paySn!=''"> and t.paySn=#{paySn} </if>
+        <if test="remark!=null and remark!=''"> and t.remark=#{remark} </if>
+        <if test="type!=null"> and t.type = #{type.code} </if>
+        <if test="state!=null"> and t.state = #{state.code} </if>
+        <if test="payType!=null"> and t.payType = #{payType.code} </if>
+        <if test="createTime!=null"> and t.createTime=#{createTime} </if>
+        <if test="endTime!=null"> and t.endTime=#{endTime} </if>
+	</select>
+	
+	<select id="sys_trade.selectPageList" parameterType="cn.jeesoft.core.model.PagerModel" resultType="cn.jeesoft.mvc.bean.SysTrade">
+		SELECT t.id, t.fromId, t.toId, t.name, t.sn, t.money, t.createtime, t.endTime, t.paySn, t.remark,
+            feesMoney, oneProfitMoney, twoProfitMoney, threeProfitMoney, 
+            case t.state when 0 then 'CREATED' when 1 then 'FAILED' when 2 then 'SUCCESS' when 3 then 'PAYOFF' else 'UNKNOWN' end as state, 
+            case t.type when 1 then 'CALL' when 2 then 'TRANSFER' when 3 then 'SHOP' when 4 then 'P2P' when 5 then 'PROFIT' when 6 then 'FEES' when 7 then 'RECHARGE' when 8 then 'WITHDRAW' else 'UNKNOWN' end as type, 
+            case t.payType when 0 then 'BALANCE' when 1 then 'ALIPAY' when 2 then 'BANK' when 3 then 'KKLPAY' when 4 then 'AUTH' else 'UNKNOWN' end as payType
+        FROM t_sys_trade t where 1=1  
+        <if test="query.fromId!=null"> and t.fromId=#{query.fromId} </if>
+        <if test="query.toId!=null and query.toId>0"> and t.toId=#{query.toId} </if>
+        <if test="query.name!=null and query.name!=''"> and t.name like concat('%', #{query.name}, '%') </if>
+        <if test="query.sn!=null and query.sn!=''"> and t.sn like concat('%', #{query.sn}, '%') </if>
+        <if test="query.paySn!=null and query.paySn!=''"> and t.paySn like concat('%', #{query.paySn}, '%') </if>
+        <if test="query.remark!=null and query.remark!=''"> and t.remark like concat('%', #{query.remark}, '%') </if>
+        <if test="query.type!=null"> and t.type = #{query.type.code} </if>
+        <if test="query.type!=null and query.type.code==8"> and remark != '' </if>
+        <if test="query.state!=null"> and t.state = #{query.state.code} </if>
+        <if test="query.payType!=null"> and t.payType = #{query.payType.code} </if>
+        <if test="query.paySn!=null and query.paySn!=''"> and t.paySn like concat('%', #{query.paySn}, '%') </if>
+        <if test="startTime!=null"> and createTime >= #{startTime} </if>
+        <if test="endTime!=null"><![CDATA[ and createTime <= #{endTime} ]]></if>
+        
+		<if test="orderby!=null and orderby!=''"> order by #{orderby} </if>
+		<if test="orderby==null or orderby==''"> order by id </if>
+		
+		<if test="sort!=null and sort.name=='asc'"> asc </if>
+		<if test="sort==null or sort.name!='asc'"> desc </if>
+		limit #{offset}, #{pageSize}
+	</select>
+	<select id="sys_trade.selectPageCount" parameterType="cn.jeesoft.core.model.PagerModel" resultType="java.lang.Integer">
+		SELECT count(*) FROM t_sys_trade t where 1=1
+        <if test="query.fromId!=null"> and t.fromId=#{query.fromId} </if>
+        <if test="query.toId!=null and query.toId>0"> and t.toId=#{query.toId} </if>
+        <if test="query.name!=null and query.name!=''"> and t.name like concat('%', #{query.name}, '%') </if>
+        <if test="query.sn!=null and query.sn!=''"> and t.sn like concat('%', #{query.sn}, '%') </if>
+        <if test="query.paySn!=null and query.paySn!=''"> and t.paySn like concat('%', #{query.paySn}, '%') </if>
+        <if test="query.remark!=null and query.remark!=''"> and t.remark like concat('%', #{query.remark}, '%') </if>
+        <if test="query.type!=null"> and t.type = #{query.type.code} </if>
+        <if test="query.type!=null and query.type.code==8"> and remark != '' </if>
+        <if test="query.state!=null"> and t.state = #{query.state.code} </if>
+        <if test="query.payType!=null"> and t.payType = #{query.payType.code} </if>
+        <if test="query.paySn!=null and query.paySn!=''"> and t.paySn like concat('%', #{query.paySn}, '%') </if>
+        <if test="startTime!=null"> and createTime >= #{startTime} </if>
+        <if test="endTime!=null"><![CDATA[ and createTime <= #{endTime} ]]></if>
+	</select>
+	
+	<select id="sys_trade.selectOne" parameterType="cn.jeesoft.mvc.bean.SysTrade" resultType="cn.jeesoft.mvc.bean.SysTrade">
+		SELECT t.id, t.fromId, t.toId, t.name, t.sn, t.money, t.createtime, t.endTime, t.paySn, t.remark,
+            feesMoney, oneProfitMoney, twoProfitMoney, threeProfitMoney, 
+            case t.state when 0 then 'CREATED' when 1 then 'FAILED' when 2 then 'SUCCESS' when 3 then 'PAYOFF' else 'UNKNOWN' end as state, 
+            case t.type when 1 then 'CALL' when 2 then 'TRANSFER' when 3 then 'SHOP' when 4 then 'P2P' when 5 then 'PROFIT' when 6 then 'FEES' when 7 then 'RECHARGE' when 8 then 'WITHDRAW' else 'UNKNOWN' end as type, 
+            case t.payType when 0 then 'BALANCE' when 1 then 'ALIPAY' when 2 then 'BANK' when 3 then 'KKLPAY' when 4 then 'AUTH' else 'UNKNOWN' end as payType
+        FROM t_sys_trade t where 1=1 
+        <if test="id!=null and id>0"> and t.id=#{id} </if>
+        <if test="fromId!=null"> and t.fromId=#{fromId} </if>
+        <if test="toId!=null and toId>0"> and t.toId=#{toId} </if>
+        <if test="name!=null and name!=''"> and t.name=#{name} </if>
+        <if test="sn!=null and sn!=''"> and t.sn=#{sn} </if>
+        <if test="paySn!=null and paySn!=''"> and t.paySn=#{paySn} </if>
+        <if test="remark!=null and remark!=''"> and t.remark=#{remark} </if>
+        <if test="type!=null"> and t.type = #{type.code} </if>
+        <if test="state!=null"> and t.state = #{state.code} </if>
+        <if test="payType!=null"> and t.payType = #{payType.code} </if>
+        <if test="createTime!=null"> and t.createTime=#{createTime} </if>
+        <if test="endTime!=null"> and t.endTime=#{endTime} </if>
+	</select>
+	
+	<insert id="sys_trade.insert" parameterType="cn.jeesoft.mvc.bean.SysTrade" useGeneratedKeys="true" keyProperty="id">
+		insert into `t_sys_trade`
+		 ( id, fromId, toId, name, sn, money, createTime, remark, state, type, isInstant, 
+            feesMoney, oneProfitMoney, twoProfitMoney, threeProfitMoney )
+		values ( id,#{fromId},#{toId},#{name},#{sn},#{money},#{createTime},#{remark},${state.code},${type.code}, <if test="#{isInstant}">1</if><if test="!#{isInstant}">0</if>,
+		    #{feesMoney}, #{oneProfitMoney}, #{twoProfitMoney}, #{threeProfitMoney} )
+	</insert>
+	
+	<update id="sys_trade.update" parameterType="cn.jeesoft.mvc.bean.SysTrade">
+		update t_sys_trade
+    <set>
+		<if test="endTime!=null">
+			endTime=#{endTime},
+		</if>
+		<if test="paySn!=null and paySn!=''">
+			paySn=#{paySn},
+		</if>
+		<if test="remark!=null and remark!=''">
+			remark=#{remark},
+		</if>
+        <if test="state!=null">
+            state=${state.code},
+        </if>
+        <if test="type!=null">
+            type=${type.code},
+        </if>
+        <if test="payType!=null">
+            payType=${payType.code},
+        </if>
+        <if test="oneProfitMoney!=null">
+            oneProfitMoney=${oneProfitMoney},
+        </if>
+        <if test="twoProfitMoney!=null">
+            twoProfitMoney=${twoProfitMoney},
+        </if>
+        <if test="threeProfitMoney!=null">
+            threeProfitMoney=${threeProfitMoney}
+        </if>
+    </set>
+    <where>
+        <if test="id!=null and id>0"> id=#{id} </if>
+        <if test="sn!=null and sn!=''"> and sn=#{sn} </if>
+    </where>
+	</update>
+	
+    <delete id="sys_trade.deleteById" parameterType="cn.jeesoft.mvc.bean.SysTrade">
+        delete from t_sys_trade
+        <where>
+            <if test="id!=null"> id=#{id} </if>
+            <if test="id==null"> id=0 </if>
+        </where>
+    </delete>
+	
+</mapper>  

@@ -1,0 +1,29 @@
+<html> 
+<head> 
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+	<!-- <meta http-equiv="refresh" content="0;url=manage/index"> -->
+</head> 
+<body> 
+<p>
+点此进入管理后台<a href="manage/index">manage/index</a>
+</p>
+
+<script type="text/javascript">
+var appName = 'ccshop';
+function toHome() {
+    var url = location.href;
+    if (url.indexOf(appName) > 0) {
+        url = url.substring(0, url.indexOf(appName)+appName.length);
+    }
+    if (!url.endsWith('/')) {
+        url = url+'/';
+    }
+    url = url + 'manage/index';
+    
+    location.href = url;
+}
+toHome();
+</script>
+
+</body>
+</html>

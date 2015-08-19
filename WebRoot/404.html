@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	
+	<!-- Viewport metatags -->
+	<meta name="HandheldFriendly" content="true" />
+	<meta name="MobileOptimized" content="320" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<link rel="stylesheet" type="text/css" href="/resource/404/css/dandelion.css"  media="screen" />
+	<link rel="stylesheet" type="text/css" href="/ccshop/resource/404/css/dandelion.css"  media="screen" />
+	
+	<title>404页面</title>
+</head>
+
+<body>
+    
+	<!-- Main Wrapper. Set this to 'fixed' for fixed layout and 'fluid' for fluid layout' -->
+	<div id="da-wrapper" class="fluid">
+    
+        <!-- Content -->
+        <div id="da-content">
+            
+            <!-- Container -->
+            <div class="da-container clearfix">
+            	<div id="da-error-wrapper">
+                   	<div id="da-error-pin"></div>
+                    <div id="da-error-code">
+                        <br> 404 <br></br>
+                        <div style="font-size: 22px;">抱歉，页面不存在！</div>
+                        <br></br>
+                        
+                        <div style="font-size:12px;color:#FFF;text-decoration:underline;">
+                        <a href="javascript:toHome();">进入管理后台</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+    var appName = 'ccshop';
+    function toHome() {
+		var url = location.href;
+        if (url.indexOf(appName) > 0) {
+            url = url.substring(0, url.indexOf(appName)+appName.length);
+        }
+		if (!url.endsWith('/')) {
+		    url = url+'/';
+		}
+		url = url + 'manage/index';
+		
+		location.href = url;
+    }
+    </script>
+    
+</body>
+</html>
